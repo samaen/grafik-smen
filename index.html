@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="color-scheme" content="dark">
+<title>График смен</title>
+<style>
+:root{--bg:#1d2233;--card:#272d44;--card2:#30375114;--line:#3a4263;--tx:#e8ebf5;--mut:#9099b8;--acc:#7fa2ff;--ok:#5fcf9c;--warn:#f0a35e;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.4 -apple-system,"SF Pro Text","Segoe UI",Roboto,sans-serif;padding-bottom:calc(76px + env(safe-area-inset-bottom,0px))}
+header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 8px}
+.mn{display:flex;align-items:center;gap:6px}
+.mn b{font-size:20px;min-width:150px;text-align:center;font-weight:650}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+.ic{width:38px;height:38px;border-radius:12px;background:var(--card);font-size:20px}
+main{padding:0 12px 12px;max-width:560px;margin:0 auto}
+.wd,.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.wd span{text-align:center;color:var(--mut);font-size:12px;padding:6px 0}
+.d{aspect-ratio:1/1.12;border-radius:12px;background:var(--card);position:relative;padding:5px 6px;text-align:left;display:flex;flex-direction:column;justify-content:space-between;border:1.5px solid transparent;overflow:hidden}
+.d.e{background:transparent}
+.d.f{background:color-mix(in srgb,var(--c) 30%,var(--card));border-color:color-mix(in srgb,var(--c) 70%,transparent)}
+.d.t{outline:2px solid var(--tx);outline-offset:-2px}
+.d i{font-style:normal;font-size:14px;font-weight:600}
+.d small{font-size:11px;color:var(--tx);opacity:.85;line-height:1.1}
+.d em{position:absolute;right:4px;top:4px;font-style:normal;font-size:10px;font-weight:700;background:var(--warn);color:#1d2233;border-radius:6px;padding:0 4px}
+.leg{display:flex;flex-wrap:wrap;gap:8px 14px;margin:14px 4px;color:var(--mut);font-size:13px}
+.leg span:before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--c);margin-right:6px}
+.card{background:var(--card);border-radius:16px;padding:14px 16px;margin-bottom:10px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 0}
+.row+.row{border-top:1px solid var(--line)}
+.row label,.row span.l{color:var(--mut)}
+.big{font-size:30px;font-weight:700}
+.g{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.g .card{margin:0}
+.g small{color:var(--mut);display:block;font-size:13px}
+.ok{color:var(--ok)}.wr{color:var(--warn)}
+input[type=number],input[type=text]{background:var(--bg);border:1px solid var(--line);color:var(--tx);border-radius:10px;padding:9px 10px;font:inherit;width:120px;text-align:right}
+input[type=text]{text-align:left;width:100%}
+input[type=color]{width:38px;height:38px;border:0;background:none;padding:0}
+h3{margin:18px 4px 8px;font-size:15px;color:var(--mut);font-weight:600}
+nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:#232940;border-top:1px solid var(--line);padding:6px 8px calc(6px + env(safe-area-inset-bottom,0px))}
+nav button{flex:1;padding:8px 0;color:var(--mut);font-size:12px;display:flex;flex-direction:column;align-items:center;gap:2px}
+nav button span{font-size:21px}
+nav button.on{color:var(--acc)}
+.sh{position:fixed;inset:0;background:#0008;display:none;align-items:flex-end;z-index:9}
+.sh.on{display:flex}
+.pn{background:#2b3250;width:100%;max-width:560px;margin:0 auto;border-radius:22px 22px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom,0px));max-height:88%;overflow:auto}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.chip{padding:9px 14px;border-radius:12px;background:var(--card);border:1.5px solid transparent}
+.chip.on{border-color:var(--c);background:color-mix(in srgb,var(--c) 35%,var(--card))}
+.qs{display:flex;gap:6px}
+.qs button{background:var(--card);border-radius:9px;padding:6px 10px;font-size:14px}
+.btn{width:100%;padding:13px;border-radius:14px;background:var(--acc);color:#14192b;font-weight:650;margin-top:10px}
+.btn.s{background:var(--card);color:var(--tx)}
+.tr{display:grid;grid-template-columns:1fr 64px 38px 34px;gap:6px;align-items:center;margin:6px 0}
+.tr input[type=number]{width:100%;padding:9px 6px;text-align:center}
+.mut{color:var(--mut);font-size:13px}
+body{background:linear-gradient(180deg,#242b46 0,#1a1f2f 460px) fixed #1a1f2f;font-family:ui-rounded,"SF Pro Rounded",-apple-system,"SF Pro Text","Segoe UI",sans-serif;font-variant-numeric:tabular-nums}
+.mn b{font-size:22px;letter-spacing:-.01em}
+.ic{background:#2a3150;border:1px solid #38406298}
+.card{background:#272e49;border:1px solid #363e5f;border-radius:20px}
+.d{border-radius:14px;background:#272e49;border:1px solid #323a59}
+.d.t{outline:2px solid var(--acc);outline-offset:-2px}
+.d i{font-size:15px}
+.d.f small{font-weight:600}
+nav{background:#1d2236e8;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid #343b5a}
+.big{font-size:40px;letter-spacing:-.02em;margin:2px 0}
+.hero{padding:18px 18px 16px;background:linear-gradient(160deg,#2e3756,#262d47)}
+.bar{height:9px;border-radius:5px;background:#1a1f31;overflow:hidden;margin:8px 0 6px}
+.bar i{display:block;height:100%;border-radius:5px;background:linear-gradient(90deg,#5b8def,#86a8ff)}
+.mr{padding:11px 0}.mr+.mr{border-top:1px solid #343b5a}
+.mr.lo .bar i{background:linear-gradient(90deg,#e8894a,#f0a35e)}
+.mt{display:flex;justify-content:space-between;font-size:17px}
+.mm{font-size:13px;color:var(--mut)}
+.up{color:var(--ok)}.dn{color:var(--warn)}
+.pn{background:#2a3150;border-top:1px solid #3d4668}
+.btn{border-radius:16px}
+</style>
+</head>
+<body>
+<header>
+  <div class="mn"><button class="ic" id="pv">‹</button><b id="ttl"></b><button class="ic" id="nx">›</button></div>
+  <div style="display:flex;gap:6px"><button class="ic" id="gen">🔁</button><button class="ic" id="gear">⚙</button></div>
+</header>
+<main id="v"></main>
+<nav>
+  <button data-t="cal" class="on"><span>📅</span>График</button>
+  <button data-t="hrs"><span>⏱</span>Часы</button>
+  <button data-t="pay"><span>💰</span>Доходы</button>
+  <button data-t="sv"><span>💾</span>Сейвы</button>
+</nav>
+<div class="sh" id="sh"><div class="pn" id="pn"></div></div>
+
+<script>
+const KEY='smeny-v1';
+const MN=['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+const DEF={types:[{id:'d',n:'День',h:12,c:'#5b8def'},{id:'n',n:'Ночь',h:12,c:'#9a78e0'},{id:'s',n:'Сутки',h:24,c:'#e8894a'},{id:'o',n:'Выходной',h:0,c:'#5a6488'},{id:'v',n:'Отпуск',h:0,c:'#43b58f'}],days:{},pay:{},norm:{},nd:8};
+let S;try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+S=Object.assign(JSON.parse(JSON.stringify(DEF)),S||{});
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const now=new Date();let Y=now.getFullYear(),M=now.getMonth(),tab='cal';
+const $=id=>document.getElementById(id);
+const p2=n=>String(n).padStart(2,'0');
+const dk=d=>`${Y}-${p2(M+1)}-${p2(d)}`;
+const mk=()=>`${Y}-${p2(M+1)}`;
+const fh=n=>(Math.round(n*100)/100).toString().replace('.',',');
+const fm=n=>Math.round(n).toLocaleString('ru-RU')+' ₽';
+const T=id=>S.types.find(t=>t.id===id);
+const dim=()=>new Date(Y,M+1,0).getDate();
+
+function autoNorm(){let c=0;for(let d=1;d<=dim();d++){const w=new Date(Y,M,d).getDay();if(w&&w<6)c++}return c*S.nd}
+const SV=()=>S.saves=S.saves||[];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const snap=()=>{const c={...S};delete c.saves;return JSON.stringify(c)};
+function vSv(){
+  const d=new Date(),def='График смен '+p2(d.getDate())+'.'+p2(d.getMonth()+1)+'.'+d.getFullYear();
+  return `<div class="card"><div class="mut" style="margin-bottom:8px">Название сейва</div><input type="text" id="svn" value="${def}"><button class="btn" id="svb">Сохранить сейв файлом</button><label class="btn s" style="display:block;text-align:center">Загрузить сейв из файла<input type="file" id="svf" accept=".json,application/json" hidden></label></div><p class="mut" style="margin:4px">Файл хранит весь график, смены, часы и доходы. Положи его в «Файлы» или iCloud, он не зависит от браузера. При загрузке текущие данные заменяются.</p>`;
+}
+function wireSv(){
+  $('svb').onclick=async()=>{
+    const n=($('svn').value||'').trim()||'График смен';
+    const data=JSON.stringify({app:'График смен',name:n,saved:new Date().toLocaleString('ru-RU'),...S});
+    try{const dl=await claude.use('downloads');if(!dl){alert('Сохранение файлом здесь недоступно');return}
+      await dl.save({filename:n.replace(/[:*?"<>|\/]/g,'-')+'.json',data});
+    }catch(e){if(!e||e.code!=='declined')alert('Не получилось сохранить: '+((e&&e.code)||'ошибка'))}
+  };
+  $('svf').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();
+    r.onload=()=>{try{const o=JSON.parse(r.result);if(o.app!=='График смен'||!o.days)throw 0;
+      if(!confirm('Загрузить «'+(o.name||f.name)+'»? Текущие данные заменятся.'))return;
+      delete o.app;delete o.name;delete o.saved;S=Object.assign(JSON.parse(JSON.stringify(DEF)),o);save();render()
+    }catch(x){alert('Это не сейв «График смен»')}};r.readAsText(f)};
+}
+function vSvOld(){
+  const d=new Date(),def='График смен '+p2(d.getDate())+'.'+p2(d.getMonth()+1);
+  return `<div class="card"><div class="mut" style="margin-bottom:8px">Название сейва</div><input type="text" id="svn" value="${def}"><button class="btn" id="svb">Сохранить сейв</button></div>
+  <h3>Мои сейвы</h3><div class="card">${SV().length?SV().map((s,i)=>`<div class="row"><div><b>${esc(s.name)}</b><div class="mm">${s.when}</div></div><span><button class="chip" data-l="${i}">Загрузить</button> <button data-x2="${i}" style="padding:8px">✕</button></span></div>`).join(''):'<span class="mut">Сейвов пока нет</span>'}</div>
+  <p class="mut" style="margin:4px">Сейв хранит весь график, смены, часы и доходы. Загрузка заменяет текущие данные.</p>`;
+}
+function wireSvOld(){
+  $('svb').onclick=()=>{const n=($('svn').value||'').trim()||'Сейв',d=new Date();SV().unshift({name:n,when:`${p2(d.getDate())}.${p2(d.getMonth()+1)}.${d.getFullYear()} ${p2(d.getHours())}:${p2(d.getMinutes())}`,data:snap()});save();render()};
+  document.querySelectorAll('[data-l]').forEach(b=>b.onclick=()=>{const s=SV()[b.dataset.l];if(!confirm('Загрузить «'+s.name+'»? Текущие данные заменятся.'))return;const keep=S.saves;S=Object.assign(JSON.parse(JSON.stringify(DEF)),JSON.parse(s.data));S.saves=keep;save();render()});
+  document.querySelectorAll('[data-x2]').forEach(b=>b.onclick=()=>{if(confirm('Удалить сейв?')){SV().splice(b.dataset.x2,1);save();render()}});
+}
+const todayK=()=>{const n=new Date();return `${n.getFullYear()}-${p2(n.getMonth()+1)}-${p2(n.getDate())}`};
+function stats(){
+  let work=0,extra=0,shifts=0,plan=0;const by={},ex=[],tk=todayK();
+  for(let d=1;d<=dim();d++){const x=S.days[dk(d)];if(!x)continue;
+    const h=+x.h||0,e=+x.e||0;plan+=h+e;if(dk(d)>tk)continue;work+=h+e;extra+=e;
+    if(h+e>0)shifts++;
+    const b=by[x.t]=by[x.t]||{c:0,h:0};b.c++;b.h+=h+e;
+    if(e)ex.push([d,e,x.note]);}
+  const norm=S.norm[mk()]!=null&&S.norm[mk()]!==''?+S.norm[mk()]:autoNorm();
+  return{work,plan,extra,shifts,by,ex,norm,over:Math.max(0,plan-norm),left:Math.max(0,norm-plan)};
+}
+
+function render(){
+  $('ttl').textContent=MN[M]+' '+Y;
+  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.t===tab));
+  $('v').innerHTML=tab==='cal'?vCal():tab==='hrs'?vHrs():tab==='sv'?vSv():vPay();
+  if(tab==='sv')wireSv();
+  if(tab==='cal')document.querySelectorAll('.d[data-k]').forEach(b=>b.onclick=()=>openDay(b.dataset.k));
+  
+  if(tab==='pay')['adv','sal','vac'].forEach(f=>$(f).oninput=e=>{const o=S.pay[mk()]=S.pay[mk()]||{};o[f]=e.target.value;save();$('tot').textContent=fm(payTot(mk()));$('sub').textContent=heroSub(mk());$('dyn').innerHTML=dyn()});
+}
+function render2(){const s=stats();$('rs').innerHTML=sumHtml(s)}
+
+function vCal(){
+  const off=(new Date(Y,M,1).getDay()+6)%7;let h='<div class="wd">'+['Пн','Вт','Ср','Чт','Пт','Сб','Вс'].map(x=>`<span>${x}</span>`).join('')+'</div><div class="cal">';
+  for(let i=0;i<off;i++)h+='<div class="d e"></div>';
+  const td=now.getFullYear()===Y&&now.getMonth()===M?now.getDate():0;
+  for(let d=1;d<=dim();d++){
+    const x=S.days[dk(d)],t=x&&T(x.t);
+    const tot=x?(+x.h||0)+(+x.e||0):0;
+    h+=`<button class="d ${t?'f':''} ${d===td?'t':''}" data-k="${dk(d)}" style="--c:${t?t.c:'#fff'}"><i>${d}</i>${x&&+x.e?`<em>+${fh(+x.e)}</em>`:''}<small>${t?t.n+(tot?'<br>'+fh(tot)+'ч':''):''}</small></button>`;
+  }
+  return h+'</div><div class="leg">'+S.types.map(t=>`<span style="--c:${t.c}">${t.n}</span>`).join('')+'</div><p class="mut" style="margin:4px">Нажми на день — выбрать смену, часы и доп часы.</p>';
+}
+
+function sumHtml(s){
+  return `
+  <div class="row"><span class="l">Отработано сейчас</span><b>${fh(s.work)} ч</b></div>
+  <div class="row"><span class="l">Всего по графику</span><b>${fh(s.plan)} ч</b></div>
+  
+  `;
+}
+function vHrs(){
+  const s=stats(),auto=autoNorm();
+  let h=`<div class="g"><div class="card"><small>Отработано</small><div class="big">${fh(s.work)}</div></div><div class="card"><small>Доп часы</small><div class="big wr">${fh(s.extra)}</div></div></div>
+  <h3>Часы за месяц</h3><div class="card">
+  
+  <div id="rs">${sumHtml(s)}</div></div>
+  <h3>По сменам</h3><div class="card">`;
+  const ks=Object.keys(s.by);
+  h+=ks.length?ks.map(k=>{const t=T(k);return `<div class="row"><span class="l" style="color:${t?t.c:'var(--mut)'}">${t?t.n:'—'} × ${s.by[k].c}</span><b>${fh(s.by[k].h)} ч</b></div>`}).join(''):'<span class="mut">Смены ещё не отмечены</span>';
+  h+=`</div><h3>Доп часы по дням</h3><div class="card">`;
+  h+=s.ex.length?s.ex.map(([d,e,n])=>`<div class="row"><span class="l">${d} ${MN[M].slice(0,3).toLowerCase()}${n?' · '+n:''}</span><b class="wr">+${fh(e)} ч</b></div>`).join(''):'<span class="mut">Нет доп часов</span>';
+  return h+'</div>';
+}
+
+const payTot=k=>{const o=S.pay[k]||{};return(+o.adv||0)+(+o.sal||0)};
+const hrs=k=>{let t=0;for(const d in S.days)if(d.startsWith(k)&&d<=todayK()){const x=S.days[d];t+=(+x.h||0)+(+x.e||0)}return t};
+const heroSub=k=>{const o=S.pay[k]||{};return `${fm(+o.adv||0)} аванс + ${fm(+o.sal||0)} зарплата`+(+o.vac?`, в том числе отпускные ${fm(+o.vac)}`:'')};
+function dyn(){
+  const ts=[];for(let m=0;m<12;m++)ts.push(payTot(`${Y}-${p2(m+1)}`));
+  const nz=ts.filter(x=>x>0);
+  if(!nz.length)return '<h3>Динамика за '+Y+' год</h3><div class="card mut">Заполни аванс и зарплату — здесь появится сравнение месяцев</div>';
+  const max=Math.max(...nz),sum=nz.reduce((a,b)=>a+b,0),avg=sum/nz.length;let h='';
+  ts.forEach((t,m)=>{
+    if(!t)return;
+    const hh=hrs(`${Y}-${p2(m+1)}`),pv=m?ts[m-1]:0,meta=[];
+    if(hh)meta.push(fh(hh)+' ч, '+fm(t/hh)+'/ч');
+    if(pv){const d=t-pv;meta.push(`<span class="${d>=0?'up':'dn'}">${d>=0?'▲ +':'▼ −'}${fm(Math.abs(d))}</span>`)}
+    h+=`<div class="mr ${t<avg*0.85?'lo':''}"><div class="mt"><span>${MN[m]}</span><b>${fm(t)}</b></div><div class="bar"><i style="width:${t/max*100}%"></i></div><div class="mm">${meta.join('  ·  ')}</div></div>`;
+  });
+  return `<h3>Динамика за ${Y} год</h3><div class="card">${h}</div><p class="mut" style="margin:4px">Всего ${fm(sum)}, в среднем ${fm(avg)} в месяц. Оранжевым подсвечены месяцы заметно ниже среднего. ₽/ч = на руки / отработанные часы из графика, чтобы видеть, где недоплатили.</p>`;
+}
+function vPay(){
+  const o=S.pay[mk()]||{};
+  return `<div class="card hero"><div class="mut">На руки за ${MN[M].toLowerCase()}</div><div class="big ok" id="tot">${fm(payTot(mk()))}</div><div class="mut" id="sub">${heroSub(mk())}</div></div>
+  <div class="card">
+  <div class="row"><label>Аванс</label><input type="number" inputmode="decimal" id="adv" value="${o.adv??''}" placeholder="0"></div>
+  <div class="row"><label>Зарплата (остаток)</label><input type="number" inputmode="decimal" id="sal" value="${o.sal??''}" placeholder="0"></div>
+  <div class="row"><label>Из них отпускные</label><input type="number" inputmode="decimal" id="vac" value="${o.vac??''}" placeholder="0"></div></div>
+  <p class="mut" style="margin:4px">Пиши в месяц, за который деньги. Отпускные только для справки, в сумму они не добавляются.</p>
+  <div id="dyn">${dyn()}</div>`;
+}
+const dedTxt=k=>{const g=+(S.pay[k]||{}).gr||0;return g?`Начислено ${fm(g)}, удержано ${fm(g-payTot(k))}`:''};
+function vPayX(){
+  const o=S.pay[mk()]||{};let yt=0,yg=0,rows='';
+  for(let m=0;m<12;m++){const k=`${Y}-${p2(m+1)}`,t=payTot(k),g=+(S.pay[k]||{}).gr||0;yt+=t;yg+=g;rows+=`<div class="row"><span class="l">${MN[m]}</span><span>${g?`<span class="mut">${fm(g)} → </span>`:''}<b>${t?fm(t):'—'}</b></span></div>`}
+  return `<div class="card"><div class="mut">На руки за ${MN[M].toLowerCase()}</div><div class="big ok" id="tot">${fm(payTot(mk()))}</div><div class="mut" id="ded">${dedTxt(mk())}</div></div>
+  <div class="card">
+  <div class="row"><label>Начислено до вычета</label><input type="number" inputmode="decimal" id="gr" value="${o.gr??''}" placeholder="0"></div>
+  <div class="row"><label>Аванс</label><input type="number" inputmode="decimal" id="adv" value="${o.adv??''}" placeholder="0"></div>
+  <div class="row"><label>Зарплата (остаток)</label><input type="number" inputmode="decimal" id="sal" value="${o.sal??''}" placeholder="0"></div>
+  <div class="row"><label>Отпускные</label><input type="number" inputmode="decimal" id="vac" value="${o.vac??''}" placeholder="0"></div></div>
+  <p class="mut" style="margin:4px">Пиши аванс и зарплату в тот месяц, за который они, а не когда пришли. Сентябрьский аванс и октябрьская зарплата идут в сентябрь. «Начислено» — сумма до вычета, «на руки» — аванс + зарплата + отпускные.</p>
+  <h3>За ${Y} год: на руки ${fm(yt)}${yg?`, начислено ${fm(yg)}`:''}</h3><div class="card">${rows}</div>`;
+}
+function vPayOld(){
+  const o=S.pay[mk()]||{};let yt=0,rows='';
+  for(let m=0;m<12;m++){const k=`${Y}-${p2(m+1)}`,t=payTot(k);yt+=t;rows+=`<div class="row"><span class="l">${MN[m]}</span><b>${t?fm(t):'—'}</b></div>`}
+  return `<div class="card"><div class="mut">Всего за ${MN[M].toLowerCase()}</div><div class="big ok" id="tot">${fm(payTot(mk()))}</div></div>
+  <div class="card">
+  <div class="row"><label>Аванс</label><input type="number" inputmode="decimal" id="adv" value="${o.adv??''}" placeholder="0"></div>
+  <div class="row"><label>Зарплата</label><input type="number" inputmode="decimal" id="sal" value="${o.sal??''}" placeholder="0"></div>
+  <div class="row"><label>Доплаты, премии</label><input type="number" inputmode="decimal" id="oth" value="${o.oth??''}" placeholder="0"></div></div>
+  <h3>Итого за ${Y} год: ${fm(yt)}</h3><div class="card">${rows}</div>`;
+}
+
+let cur,curK;
+function openDay(k){
+  curK=k;const x=S.days[k];cur=x?{...x}:{t:S.types[0].id,h:S.types[0].h,e:0,note:''};
+  drawDay();$('sh').classList.add('on');
+}
+function drawDay(){
+  const d=+curK.slice(8);
+  $('pn').innerHTML=`<b style="font-size:18px">${d} ${MN[M].toLowerCase()}</b>
+  <div class="chips">${S.types.map(t=>`<button class="chip ${cur.t===t.id?'on':''}" style="--c:${t.c}" data-t="${t.id}">${t.n}</button>`).join('')}</div>
+  <div class="row"><label>Часов в смене</label><input type="number" inputmode="decimal" id="ch" value="${cur.h}"></div>
+  <div class="row"><label>Доп часы</label><input type="number" inputmode="decimal" id="ce" value="${cur.e||''}" placeholder="0"></div>
+  <div class="qs" style="justify-content:flex-end">${[1,2,4,12].map(n=>`<button data-q="${n}">+${n}</button>`).join('')}<button data-q="0">сброс</button></div>
+  <div class="row"><input type="text" id="cn" placeholder="Заметка" value="${(cur.note||'').replace(/"/g,'&quot;')}"></div>
+  <button class="btn" id="sv">Сохранить</button>
+  <button class="btn s" id="dl">Очистить день</button>`;
+  document.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{rd();cur.t=b.dataset.t;cur.h=T(cur.t).h;drawDay()});
+  document.querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>{rd();const q=+b.dataset.q;cur.e=q?(+cur.e||0)+q:0;drawDay()});
+  $('sv').onclick=()=>{rd();S.days[curK]=cur;save();close_();render()};
+  $('dl').onclick=()=>{delete S.days[curK];save();close_();render()};
+}
+function rd(){cur.h=+$('ch').value||0;cur.e=+$('ce').value||0;cur.note=$('cn').value}
+const close_=()=>$('sh').classList.remove('on');
+$('sh').onclick=e=>{if(e.target===$('sh'))close_()};
+
+function openSet(){
+  $('pn').innerHTML=`<b style="font-size:18px">Настройки</b>
+  
+  
+  <h3 style="margin-top:8px">Виды смен</h3>
+  ${S.types.map((t,i)=>`<div class="tr"><input type="text" data-n="${i}" value="${t.n}"><input type="number" data-h="${i}" value="${t.h}"><input type="color" data-c="${i}" value="${t.c}"><button data-x="${i}">✕</button></div>`).join('')}
+  <button class="btn s" id="ad">+ Добавить смену</button>
+  <button class="btn" id="ok">Готово</button>
+  <button class="btn s" id="bk">Скопировать бэкап</button>
+  <button class="btn s" id="rs2">Восстановить из бэкапа</button>`;
+  const rdS=()=>{document.querySelectorAll('[data-n]').forEach(i=>S.types[i.dataset.n].n=i.value);document.querySelectorAll('[data-h]').forEach(i=>S.types[i.dataset.h].h=+i.value||0);document.querySelectorAll('[data-c]').forEach(i=>S.types[i.dataset.c].c=i.value)};
+  document.querySelectorAll('[data-x]').forEach(b=>b.onclick=()=>{rdS();S.types.splice(b.dataset.x,1);save();openSet()});
+  $('ad').onclick=()=>{rdS();S.types.push({id:'t'+Date.now(),n:'Новая',h:8,c:'#6fb3d9'});save();openSet()};
+  $('ok').onclick=()=>{rdS();save();close_();render()};
+  $('bk').onclick=()=>{const j=JSON.stringify({app:'График смен',saved:new Date().toLocaleString('ru-RU'),...S});(navigator.clipboard?navigator.clipboard.writeText(j):Promise.reject()).then(()=>alert('Бэкап «График смен» скопирован. Вставь в заметки.')).catch(()=>prompt('Скопируй:',j))};
+  $('rs2').onclick=()=>{const j=prompt('Вставь бэкап:');if(!j)return;try{S=Object.assign(JSON.parse(JSON.stringify(DEF)),JSON.parse(j));save();close_();render()}catch(e){alert('Не вышло, бэкап битый')}};
+  $('sh').classList.add('on');
+}
+
+const IN='background:var(--bg);border:1px solid var(--line);color:var(--tx);border-radius:10px;padding:9px 10px;font:inherit';
+function openGen(){
+  const g=S.gen=S.gen||{start:`${Y}-${p2(M+1)}-01`,seq:[]};
+  const draw=()=>{
+    const off=(S.types.find(t=>t.h===0&&/ыход/i.test(t.n))||S.types.find(t=>t.h===0)||S.types[0]).id;
+    $('pn').innerHTML=`<b style="font-size:18px">График на год</b>
+    <p class="mut" style="margin:6px 0">Один раз задай первую смену и цикл — заполню 365 дней вперёд. Доп часы и заметки в днях не потеряются.</p>
+    <div class="row"><label>Первая смена</label><input type="date" id="gs" value="${g.start}" style="${IN}"></div>
+    <h3 style="margin-top:10px">Быстро собрать цикл</h3>
+    <div class="row"><label>Смена</label><select id="gt" style="${IN}">${S.types.filter(t=>t.id!==off).map(t=>`<option value="${t.id}">${t.n}</option>`).join('')}</select></div>
+    <div class="row"><label>Работаю подряд, дн.</label><input type="number" id="gw" value="${g.w||1}"></div>
+    <div class="row"><label>Потом выходных, дн.</label><input type="number" id="go" value="${g.o??2}"></div>
+    <button class="btn s" id="gq">Собрать цикл</button>
+    <h3>Цикл (тап по дню — убрать)</h3>
+    <div class="chips">${g.seq.length?g.seq.map((id,i)=>{const t=T(id)||{n:'?',c:'#888'};return `<button class="chip on" style="--c:${t.c}" data-r="${i}">${t.n}</button>`}).join(''):'<span class="mut">Пусто</span>'}</div>
+    <div class="mut">Добавить вручную:</div>
+    <div class="chips">${S.types.map(t=>`<button class="chip" style="--c:${t.c}" data-a="${t.id}">+ ${t.n}</button>`).join('')}</div>
+    <button class="btn" id="gf">Заполнить год</button>`;
+    const rg=()=>{g.start=$('gs').value||g.start;g.w=+$('gw').value||1;g.o=+$('go').value||0};
+    $('gq').onclick=()=>{rg();g.seq=Array(g.w).fill($('gt').value).concat(Array(g.o).fill(off));save();draw()};
+    document.querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{rg();g.seq.splice(b.dataset.r,1);save();draw()});
+    document.querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>{rg();g.seq.push(b.dataset.a);save();draw()});
+    $('gf').onclick=()=>{
+      rg();if(!g.seq.length){alert('Сначала собери цикл');return}
+      const [y,m,d]=g.start.split('-').map(Number);const dt=new Date(y,m-1,d);
+      for(let i=0;i<365;i++){
+        const key=`${dt.getFullYear()}-${p2(dt.getMonth()+1)}-${p2(dt.getDate())}`;
+        const t=T(g.seq[i%g.seq.length]);
+        if(t){const o=S.days[key];S.days[key]={t:t.id,h:t.h,e:o?+o.e||0:0,note:o?o.note||'':''}}
+        dt.setDate(dt.getDate()+1);
+      }
+      Y=y;M=m-1;tab='cal';save();close_();render();
+    };
+  };
+  draw();$('sh').classList.add('on');
+}
+$('gen').onclick=openGen;
+$('gear').onclick=openSet;
+$('pv').onclick=()=>{M--;if(M<0){M=11;Y--}render()};
+$('nx').onclick=()=>{M++;if(M>11){M=0;Y++}render()};
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{tab=b.dataset.t;render()});
+render();
+</script>
+</body>
+</html>
